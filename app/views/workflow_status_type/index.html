@@ -1,0 +1,65 @@
+<h1>&lt;div data-scope='json' data-prop='json'&gt;&lt;/div&gt;</h1>
+<style>
+small{
+  color:#999;
+}
+</style>
+<div id="first" class="container"></div>
+<div id="second" class="container">
+  <h2>For the records in this set</h2>
+  <table id="dataset_description" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <td>Complete Workflows</td>
+        <td>Incomplete Workflows</td>
+        <td>Total Workflows</td>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <table id="mmm" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Property Name</th>
+        <th>Mean</th>
+        <th>Median</th>
+        <th>Mode <small>(value/count/%)</small></th>
+        <th>Range</th>
+        <th>Standard Deviation</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script data-scope='json' data-prop='json' type='text/javascript'>
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $.getJSON('/ij/a.status_type/WorkflowZ:EXECUTING.json',function(data){
+    console.log(data);
+    for (var key in data)
+    {
+      if (typeof data[key]['mean'] !== 'undefined') {
+        // the variable is defined
+        var row = '<tr><td class="name">' + key + '</td>';
+        row = row + '<td class="mean">' + data[key]['mean'] + '</td>';
+        row = row + '<td class="median">' + data[key]['median'] + '</td>';
+        row = row + '<td class="median">' + data[key]['mode'].value + '<small> / ';
+        row = row + data[key]['mode'].count  + ' / ' + data[key]['mode'].percent_whole + '</small></td>';
+        row = row + '<td class="range">' + data[key]['range'] + '</td>';
+        row = row + '<td class="std_dev">' + data[key]['std_dev'] + '</td>';
+        row = row + '</tr>';
+        $('#mmm tbody').append(row);
+      }
+    }
+    var workflows_row = '<tr><td class="workflows_number">' + data['workflows_number'] + '</td>';
+    workflows_row = workflows_row + '<td>' + data['completed_workflows'].count + '</td>';
+    workflows_row = workflows_row + '<td>' + data['incomplete_workflows'].count + '</td></tr>';
+    $('#dataset_description tbody').append(workflows_row);
+  });
+});
+</script>
